@@ -1,6 +1,4 @@
 #include <iostream>
-#include <stdlib.h>
-
 
 using namespace std;
 
@@ -13,6 +11,7 @@ class Vector
     T *_data=nullptr;
     int _capacity;
     int _size;
+    inline void reallocate();
   public:
     void push_back(T & elem);
     void push_back(T&& elem); 
@@ -40,8 +39,7 @@ class Vector
             this->_size -= n;
             if ((_size)*4 < _capacity){
                 _capacity = int(_capacity/2);
-                _data = static_cast<T*>(realloc (_data, _capacity*sizeof(T)));
-                
+                reallocate();
             }
             return ind1+1;
         }
@@ -50,6 +48,18 @@ class Vector
         }
     }
 };
+
+template <typename T>
+inline void Vector<T>::reallocate() {
+    T *arr = new T[_capacity];
+    std::swap(arr, _data);
+	//memmove(arr, _data, _size * sizeof(T));
+    for (int i = 0; i < _size; i++){
+        _data[i] = std::move(arr[i]);
+    }
+    if (arr != _data) delete[] arr;
+}
+
 template <typename T>
 Vector<T>::Vector(){
     _capacity = 1;
@@ -60,7 +70,7 @@ Vector<T>::Vector(){
 template <typename T>
 Vector<T>::~Vector()
 {
-    free(_data);
+    delete [] _data;
 }
 
 // constructor with array
@@ -69,7 +79,7 @@ Vector<T>::Vector(T *input, int n)
 {
     _capacity = int(1.5 * n);
     _size = n;
-    _data = static_cast<T *>(realloc(_data, n * sizeof(T)));
+    _data = new T* [_capacity];
     
     for (int i = 0; i < n; i++)
     {
@@ -82,7 +92,8 @@ template <typename T>
 Vector<T>::Vector(const Vector<T> & v){
     _capacity = v._capacity;
     _size = v._size;
-    _data = static_cast<T *>(realloc(_data, _capacity * sizeof(T)));
+    _data = new T* [_capacity];
+    
     for (int i = 0; i < _size; i++)
     {
         _data[i] = v._data[i];
@@ -111,7 +122,7 @@ void Vector<T>::push_back(T &elem)
     if (_size + 1 >= _capacity)
     {
         _capacity = 2 * _capacity;
-        _data = static_cast<T*>(realloc (_data, _capacity*sizeof(T)));
+        reallocate();
     }
     _data[_size] = elem;
     _size++;
@@ -122,9 +133,10 @@ void Vector<T>::push_back(T&& elem){
     if (_size + 1 >= _capacity)
     {
         _capacity = 2 * _capacity;
-        _data = static_cast<T*>(realloc (_data, _capacity*sizeof(T)));
+        reallocate();
+                
     }
-    new (begin() + _size) T(move(elem));  
+    _data[_size] = move(elem);
     _size++;
 }
 
@@ -166,7 +178,8 @@ template <typename T>
 Vector<T>&& Vector<T>::operator=(const Vector<T> & v){
     _capacity = v._capacity;
     _size = v._size;
-    _data = static_cast<T *>(realloc(_data, _capacity * sizeof(T)));
+    delete [] _data;
+    _data = new T* [_capacity];
     for (int i = 0; i < _size; i++)
     {
         _data[i] = v->_data[i];
