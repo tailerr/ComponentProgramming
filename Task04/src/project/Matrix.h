@@ -18,8 +18,10 @@ class Matrix{
         int _n;
         int _m;
     public:
-        
-
+        template <typename U>
+        friend class MaskedMatrix;
+        template <typename U>
+        friend const bool operator==(Matrix<T> const m1, Matrix<T> const m2);
         Matrix<T>(int n, int m, initializer_list<T> data, int dataSize){
             if (dataSize!= n*m) throw out_of_range("Matrix::constructor");
             _n = n;
@@ -183,21 +185,6 @@ class Matrix{
             return Matrix<bool>(_n, _m, result, _n*_m);
         }  
         
-        Matrix<bool> operator==(Matrix<T> const m1){
-            if (_n == m1.getSizeX() && _m == m1.getSizeY()){
-                bool* res = new bool [_n*_m];
-                for(int i = 0; i<m1.getSizeX(); i++)
-                    for (int j=0;j<m1.getSizeY();j++)
-                        if (_data[i][j] == m1(i, j))
-                            res[i*_n+j] = true;
-                        else res[i*_n+j] = false;    
-               
-                return Matrix<bool>(_n, _m, res, _n*_m);
-            }
-            else{
-                throw out_of_range("Matrix::operator&&");
-            }
-        }
 
         MaskedMatrix<T> operator()(Matrix<bool> const& mask){
             return MaskedMatrix<T>(*this, mask);       
@@ -210,7 +197,7 @@ class Matrix{
             return _m;
         }
 
-        void printMatrix()
+        const void printMatrix()
         {
             for(int i = 0; i<_n; i++){
                     for (int j=0;j<_m;j++){
@@ -224,7 +211,7 @@ class Matrix{
 };
 
 template<typename T>
-bool operator==(Matrix<T> const m1, Matrix<T> const m2){
+const bool operator==(Matrix<T> const m1, Matrix<T> const m2){
             if (m2.getSizeX() == m1.getSizeX() && m2.getSizeY() == m1.getSizeY()){
                 for(int i = 0; i<m1.getSizeX(); i++)
                     for (int j=0;j<m1.getSizeY();j++)
@@ -237,29 +224,23 @@ bool operator==(Matrix<T> const m1, Matrix<T> const m2){
 
 template <typename T>
 class MaskedMatrix{
-    friend bool operator==(MaskedMatrix<T> const m1, MaskedMatrix<T> const m2);
+    template <typename U>
+    friend const bool operator==(MaskedMatrix<U> const m1, MaskedMatrix<U> const m2);
      private:
-        Matrix<T>& _matrix = nullptr;
-        Matrix<bool>& _mask = nullptr;
-        int _n;
-        int _m;
+        
         
     public:
-        MaskedMatrix<T>(Matrix<T> &m, const Matrix<bool> & mask){
-            if (m.getSizeX() == mask.getSizeX() && m.getSizeY() == mask.getSizeY()){
-                _mask = mask;
-                _matrix = m;
-                _n = m.getSizeX();
-                _m = m.getSizeY();
-            }
-            else{
+    Matrix<T>& _matrix;
+        const Matrix<bool>& _mask;
+    
+        MaskedMatrix<T>(Matrix<T> &m, const Matrix<bool> & mask): _matrix(m), _mask(mask) { 
+            if (m.getSizeX() != mask.getSizeX() || m.getSizeY() != mask.getSizeY())
                 throw out_of_range("MaskedMatrix::constructor");
-            }   
-        } 
+        }
 
-         void operator=(const T v){
-            for (int i = 0; i<_n; ++i) 
-		        for (int j = 0; j<_m; ++j) {
+        void operator=(const T v){
+            for (int i = 0; i<_mask.getSizeX(); ++i) 
+		        for (int j = 0; j< _mask.getSizeY(); ++j) {
 			        if (_mask._data[i][j] == true)
                         _matrix._data[i][j] = v;
 			    }
@@ -267,8 +248,8 @@ class MaskedMatrix{
 };
 
 template<typename T>
-bool operator==(MaskedMatrix<T> const m1, MaskedMatrix<T> const m2){
-            if (m2._m == m1._m && m2._n == m1._n && m1._mask == m2._mask && m1._matrix == m2._matrix){
+const bool operator==(MaskedMatrix<T> const m1, MaskedMatrix<T> const m2){
+            if (m1._mask == m2._mask && m1._matrix == m2._matrix){
                 return true;
             }
             return false;

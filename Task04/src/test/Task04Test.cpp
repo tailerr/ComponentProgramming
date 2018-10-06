@@ -59,34 +59,33 @@ INSTANTIATE_TEST_CASE_P(
             Matrix<bool>(3, 3, {0, 1, 1, 1, 1, 1, 1, 1, 1}, 9) || Matrix<bool>(3, 3, {0, 1, 1, 1, 1, 1, 1, 1, 1}, 9),
             Matrix<bool>(3, 3, {0, 1, 1, 1, 1, 1, 1, 1, 1}, 9)},
         params<bool>{
-            Matrix<bool>(3, 3, {0, 1, 1, 1, 1, 1, 1, 1, 1}, 9) == Matrix<bool>(3, 3, {0, 1, 1, 1, 1, 1, 1, 1, 1}, 9),
-            Matrix<bool>(3, 3, {1, 1, 1, 1, 1, 1, 1, 1, 1}, 9)},
-        params<bool>{
             !Matrix<bool>(3, 3, {1, 0, 0, 0, 0, 0, 0, 0, 0}, 9),
              Matrix<bool>(3, 3, {0, 1, 1, 1, 1, 1, 1, 1, 1}, 9)}));
 
-// template <typename T>
-// struct mParams
-// {
-//     MaskedMatrix<T> input;
-//     MaskedMatrix<T> expected_output;
-// };
+template <typename T>
+struct mParams
+{
+    MaskedMatrix<T> input;
+    MaskedMatrix<T> expected_output;
+};
 
-// class maskedMatrix_test : public ::testing::TestWithParam<mParams<int>>
-// {
-// };
+class maskedMatrix_test : public ::testing::TestWithParam<mParams<int>>
+{
+};
 
-// TEST_P(maskedMatrix_test, _)
-// {
-//     const mParams<int> &param = GetParam();
+TEST_P(maskedMatrix_test, _)
+{
+    const mParams<int> &param = GetParam();
 
-//     EXPECT_EQ(param.expected_output, param.input);
-// }
+    EXPECT_EQ(param.expected_output, param.input);
+}
 
-// INSTANTIATE_TEST_CASE_P(
-//     _,
-//     maskedMatrix_test,
-//     ::testing::Values(
-//         mParams<int>{
-//             MaskedMatrix<int>(example, const Matrix<bool>(3, 3, {1, 0, 0, 0, 0, 0, 0, 0, 0}, 9)),
-//             example(const Matrix<bool>(3, 3, {1, 0, 0, 0, 0, 0, 0, 0, 0}, 9))}));
+INSTANTIATE_TEST_CASE_P(
+    _,
+    maskedMatrix_test,
+    ::testing::Values(
+        mParams<int>{
+            MaskedMatrix<int>(example, Matrix<bool>(3, 3, {1,1,1,1,1,1,1,1,1}, 9)),
+            Matrix<int>(3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}, 9)(Matrix<bool>(3, 3, {1,1,1,1,1,1,1,1,1}, 9))
+            }
+            ));            
