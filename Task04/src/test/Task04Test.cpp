@@ -9,6 +9,7 @@ struct params
 };
 
 Matrix<int> example = Matrix<int>(3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}, 9);
+Matrix<bool> bExample = Matrix<bool>(3, 3, {1,1,1,1,1,1,1,1,1}, 9);
 
 class matrixInt_test : public ::testing::TestWithParam<params<int>>
 {
@@ -53,7 +54,7 @@ INSTANTIATE_TEST_CASE_P(
     matrixBool_test,
     ::testing::Values(
         params<bool>{
-            Matrix<bool>(3, 3, {0, 1, 1, 1, 1, 1, 1, 1, 1}, 9) && Matrix<bool>(3, 3, {1, 1, 1, 1, 1, 1, 1, 1, 1}, 9),
+            Matrix<bool>(3, 3, {0, 1, 1, 1, 1, 1, 1, 1, 1}, 9) && bExample,
             Matrix<bool>(3, 3, {0, 1, 1, 1, 1, 1, 1, 1, 1}, 9)},
         params<bool>{
             Matrix<bool>(3, 3, {0, 1, 1, 1, 1, 1, 1, 1, 1}, 9) || Matrix<bool>(3, 3, {0, 1, 1, 1, 1, 1, 1, 1, 1}, 9),
@@ -85,7 +86,7 @@ INSTANTIATE_TEST_CASE_P(
     maskedMatrix_test,
     ::testing::Values(
         mParams<int>{
-            MaskedMatrix<int>(example, Matrix<bool>(3, 3, {1,1,1,1,1,1,1,1,1}, 9)),
-            Matrix<int>(3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}, 9)(Matrix<bool>(3, 3, {1,1,1,1,1,1,1,1,1}, 9))
+            MaskedMatrix<int>(example, bExample),
+            example(bExample)
             }
             ));            

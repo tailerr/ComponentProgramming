@@ -69,6 +69,8 @@ class Matrix{
             }
         }
         ~Matrix(){
+            for (int i=0;i<_n;i++)
+                delete[] _data[i];
             delete [] _data;
         }
         Matrix<T>& operator=(const Matrix<T> & v){
@@ -129,15 +131,14 @@ class Matrix{
          Matrix<T> operator/(Matrix<T> const& b){
             if (_n ==b._n && _m==b._m){
                 Matrix<T> result = Matrix<T>(*this);
-                T * res = new T[_n*_m];
                 for(int i = 0; i<_n; i++)
                     for (int j=0;j<_m;j++){
-                        res[i*_n+j] = _data[i][j] / b._data[i][j];
+                        result._data[i][j] /= b._data[i][j];
                     }
-                return Matrix<T>(_n, _m, res, _n*_m);
+                return result;
             }
             else{
-                throw out_of_range("Matrix::operator/");
+                throw out_of_range("Matrix::operator*");
             }
         }
 
@@ -150,12 +151,12 @@ class Matrix{
 
         Matrix<bool> operator&&(Matrix<T> const& b){
             if (_n ==b._n && _m==b._m){
-                bool* result = new bool[_n*_m];
+                Matrix<bool> result = Matrix<T>(*this);
                 for(int i = 0; i<_n; i++)
                     for (int j=0;j<_m;j++){
-                        result[i*_n+j] = _data[i][j] && b._data[i][j];
+                        result._data[i][j] = _data[i][j] && b._data[i][j];
                     }
-                return Matrix<bool>(_n, _m, result, _n*_m);
+                return result;
             }
             else{
                 throw out_of_range("Matrix::operator&&");
@@ -164,25 +165,24 @@ class Matrix{
 
         Matrix<bool> operator||(Matrix<T> const& b){
             if (_n ==b._n && _m==b._m){
-                bool* result = new bool[_n*_m];
+                Matrix<bool> result = Matrix<T>(*this);
                 for(int i = 0; i<_n; i++)
                     for (int j=0;j<_m;j++){
-                        result[i*_n+j] = _data[i][j] || b._data[i][j];
+                        result._data[i][j] = _data[i][j] || b._data[i][j];
                     }
-                Matrix<bool> s = Matrix<bool>(_n, _m, result, _n*_m);    
-                return s;
+                return result;
             }
             else{
                 throw out_of_range("Matrix::operator&&");
             }
         }
-        Matrix<bool> operator !(){
-            bool* result = new bool[_n*_m];
+        Matrix<bool> operator!(){
+            Matrix<bool> result = Matrix<T>(*this);
             for(int i = 0; i<_n; i++)
                 for (int j=0;j<_m;j++){
-                    result[i*_n+j] = !_data[i][j];
+                   result._data[i][j] = !_data[i][j];
                 }
-            return Matrix<bool>(_n, _m, result, _n*_m);
+            return result;
         }  
         
 
@@ -227,12 +227,10 @@ class MaskedMatrix{
     template <typename U>
     friend const bool operator==(MaskedMatrix<U> const m1, MaskedMatrix<U> const m2);
      private:
-        
+        Matrix<T>& _matrix;
+        const Matrix<bool>& _mask;    
         
     public:
-    Matrix<T>& _matrix;
-        const Matrix<bool>& _mask;
-    
         MaskedMatrix<T>(Matrix<T> &m, const Matrix<bool> & mask): _matrix(m), _mask(mask) { 
             if (m.getSizeX() != mask.getSizeX() || m.getSizeY() != mask.getSizeY())
                 throw out_of_range("MaskedMatrix::constructor");
