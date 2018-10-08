@@ -165,6 +165,7 @@ void Vector<T>::printVector()
 // with move
 template <typename T>
 Vector<T>& Vector<T>::operator=(Vector<T>&& v){
+    delete [] _data; 
     _capacity = v._capacity;
     _size = v._size;
     _data = v._data;
@@ -182,7 +183,7 @@ Vector<T>&& Vector<T>::operator=(const Vector<T> & v){
     _data = new T* [_capacity];
     for (int i = 0; i < _size; i++)
     {
-        _data[i] = v->_data[i];
+        _data[i] = v._data[i];
     }
     return *this;
 }
