@@ -7,12 +7,10 @@ TEST(Trait, _){
     Person p = Person("Alice", "S", 1);
     members.insert(p);
     members.insert(Person("Alex", "P", 2));
-    Trait<Person> tr;
 
     Group g = Group("name", 1, 2, members);
-    Trait<Group> tr1;
 
-    EXPECT_EQ(9,  tr.size(p));
-    EXPECT_EQ(31, tr1.size(g));
+    EXPECT_EQ(10,  Trait<Person>::size(p));
+    EXPECT_EQ(31, Trait<Group>::size(g));
 
 }
