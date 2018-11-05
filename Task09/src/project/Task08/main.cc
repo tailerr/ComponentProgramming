@@ -1,5 +1,5 @@
 #include <iostream>
-#include "MergeSort.h"
+#include <project/Task08/MergeSort.h>
 #include <chrono>
 #include <algorithm>
 #include <cstdlib>

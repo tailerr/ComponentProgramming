@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../project/Task08/MergeSort.h"
+#include <project/Task08/MergeSort.h>
 #include <algorithm>
 #include <cstdlib>
 

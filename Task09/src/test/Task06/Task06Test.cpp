@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../project/Task06/User.h"
+#include <project/Task06/User.h>
 TEST(Trait, _){
 
     std::unordered_set<Person> members;

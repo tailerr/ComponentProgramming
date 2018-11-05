@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../project/Task04/Matrix.h"
+#include <project/Task04/Matrix.h>
 
 template <typename T>
 struct params

@@ -1,5 +1,5 @@
-#include<MyIterator.h>
-#include<mergeSort.h>
+#include<project/Task05/MyIterator.h>
+#include<project/Task05/mergeSort.h>
 
 int main () {
   

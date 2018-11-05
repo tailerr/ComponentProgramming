@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../project/Task03/Message.h"
+#include <project/Task03/Message.h>
 
 
 TEST(Message, runtime_error)
