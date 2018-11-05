@@ -1,4 +1,4 @@
-#include "MyBuff.h"
+#include <project/Task07/MyBuff.h>
 #include<iostream>
 
 
