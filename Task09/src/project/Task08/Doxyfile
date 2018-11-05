@@ -1,0 +1,9 @@
+PROJECT_NAME = "Task08"
+OUTPUT_DIRECTORY = documentation
+OUTPUT_LANGUAGE = Russian
+PROJECT_BRIEF = "Сравнение быстроты работы сортировки слиянием с параллелизацией и без нее."
+GENERATE_LATEX = NO
+INPUT = ../../../../src/project/Task08
+FILE_PATTERNS = *.h *.cc
+RECURSIVE = YES
+
