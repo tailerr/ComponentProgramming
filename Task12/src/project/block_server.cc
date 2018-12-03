@@ -34,10 +34,10 @@ int main(){
     std::cout<<"Ready to work"<<std::endl;
     signal(SIGINT, quit_func);
     while(true){
+        poll(&server, 1, -1);
         if (flag){
             goto end;
         }
-        poll(&server, 1, -1);
         // std::cout<<"handle new client... "<<std::endl;
         int client_fd = accept(server_fd, nullptr, nullptr); 
         if (client_fd == -1){
