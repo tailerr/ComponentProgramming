@@ -35,11 +35,10 @@ int main(){
     signal(SIGINT, quit_func);
     while(true){
         if (flag){
-            std::cout<<"Buy"<<std::endl;
-            break;
+            goto end;
         }
         poll(&server, 1, -1);
-        std::cout<<"handle new client... "<<std::endl;
+        // std::cout<<"handle new client... "<<std::endl;
         int client_fd = accept(server_fd, nullptr, nullptr); 
         if (client_fd == -1){
                std::cout << "can't add new client"<< std::endl;
@@ -49,6 +48,10 @@ int main(){
             pollfd client{client_fd, POLLIN|POLLOUT|POLLHUP};
             // std::cout << "new client added successfully"<< std::endl;
             while(true){
+                if (flag){
+                    close(client.fd);
+                    goto end;
+                }
                 poll(&client, 1, -1);
                 if (client.revents == 0) { continue; }
                 if (client.revents & POLLIN) {  
@@ -81,6 +84,8 @@ int main(){
         }
                
     }
+    end:
+
     std::cout<<"switched off";
     shutdown(server_fd, SHUT_RDWR);
     return 0;
